@@ -1,8 +1,7 @@
 defmodule Rumbl.Video do
   use Rumbl.Web, :model
 
-  require Logger
-
+  @primary_key {:id, Rumbl.Permalink, autogenerate: true}
   schema "videos" do
     field :url, :string
     field :title, :string
@@ -27,7 +26,6 @@ defmodule Rumbl.Video do
 
   defp slugify_title(changeset) do
     if title = get_change(changeset, :title) do
-    Logger.error("asdf")
       put_change(changeset, :slug, slugify(title))
     else
       changeset
@@ -38,5 +36,11 @@ defmodule Rumbl.Video do
     str
     |> String.downcase()
     |> String.replace(~r/[^\w-]+/u, "-")
+  end
+end
+
+defimpl Phoenix.Param, for: Rumbl.Video do
+  def to_param(%{slug: slug, id: id}) do
+    "#{id}-#{slug}"
   end
 end
