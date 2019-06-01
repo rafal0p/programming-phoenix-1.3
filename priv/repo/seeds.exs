@@ -13,6 +13,9 @@
 
 alias Rumbl.Repo
 alias Rumbl.Category
+alias Rumbl.User
+
+Repo.insert!(%User{name: "Wolfram", username: "wolfram"})
 
 for category <- ~w(Action Drama Romance Comedy Sci-fi) do
   Repo.get_by(Category, name: category) ||

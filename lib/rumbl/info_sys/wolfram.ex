@@ -1,6 +1,7 @@
 defmodule Rumbl.InfoSys.Wolfram do
   import SweetXml
   alias Rumbl.InfoSys.Result
+  require Logger
 
   def start_link(query, query_ref, owner, limit) do
     Task.start_link(__MODULE__, :fetch, [query, query_ref, owner, limit])
@@ -34,6 +35,7 @@ defmodule Rumbl.InfoSys.Wolfram do
         "&input=#{URI.encode(query_str)}&format=plaintext"
       )
     )
+    Logger.debug("wolfram says:\n#{body}")
     body
   end
 

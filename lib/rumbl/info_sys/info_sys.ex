@@ -1,4 +1,6 @@
 defmodule Rumbl.InfoSys do
+  require Logger
+
   @backends [Rumbl.InfoSys.Wolfram]
 
   defmodule Result do
@@ -31,14 +33,15 @@ defmodule Rumbl.InfoSys do
   defp await_results(children, opts) do
     timeout = opts[:timeout] || 5_000
     timer = Process.send_after(self(), :timedout, timeout)
+    Logger.debug("awaiting results...")
     results = await_result(children, [], :infinity)
+    Logger.debug("results: #{inspect results}")
     cleanup(timer)
     results
   end
 
   defp await_result([head | tail], acc, timeout) do
     {pid, monitor_ref, query_ref} = head
-
     receive do
       {:results, ^query_ref, results} ->
         Process.demonitor(monitor_ref, [:flush])
